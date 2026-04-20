@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="img/logo.jpeg">
+    <title>MARKET OS | Вітрина Товарів</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background: url('img/космонавт.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        /* --- ВЕРХНЯ ПАНЕЛЬ --- */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 174, 239, 0.9);
+            padding: 12px 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 20px; }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .back-btn:hover { background: rgba(255, 255, 255, 0.4); transform: translateX(-5px); }
+
+        /* --- КОШИК --- */
+        .cart-link {
+            text-decoration: none;
+            color: white;
+        }
+
+        .cart-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #2ECC71;
+            padding: 8px 18px;
+            border-radius: 10px;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .cart-count {
+            background: #FF8C00;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            border: 2px solid white;
+        }
+
+        /* --- СІТКА ТОВАРІВ --- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(16, 34, 55, 0.9);
+            border: 1px solid rgba(0, 174, 239, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+
+        .product-img-box {
+            width: 80px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+        }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+        }
+
+        .product-main { flex-grow: 1; }
+        .product-name { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+        .brand-name { font-size: 11px; color: #00AEEF; font-weight: 600; margin-bottom: 15px; }
+
+        .price-details { font-size: 12px; color: #aaa; line-height: 1.8; }
+        .price-details b { color: #fff; }
+
+        .product-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 90px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding-left: 15px;
+        }
+
+        .btn-add {
+            background: #2ECC71;
+            color: white; border: none;
+            padding: 8px 0; width: 100%;
+            border-radius: 6px; font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-add:hover { background: #27ae60; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <header class="nav-bar">
+        <div class="nav-left">
+            <a href="index.html" class="back-btn"><i class="fas fa-chevron-left"></i> НАЗАД</a>
+            <h2 style="letter-spacing: 1px;"><i class="fas fa-shopping-basket"></i> ВІТРИНА ТОВАРІВ</h2>
+        </div>
+
+        <a href="cart.html" class="cart-link">
+            <div class="cart-container">
+                <span class="cart-total" id="cart-total-nav">$0.00</span>
+                <div style="position: relative;">
+                    <i class="fas fa-shopping-cart cart-icon"></i>
+                    <span class="cart-count" id="cart-count-nav">0</span>
+                </div>
+            </div>
+        </a>
+    </header>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <script>
+        const products = [
+            { name: "Пластівці", brand: "Chokipik", price: 3.28, img: "img/хлопя.jpg" },
+            { name: "Нарізаний хліб", brand: "Ron's", price: 0.95, img: "img/хліб.jpg" },
+            { name: "Борошно", brand: "Kraftung", price: 0.86, img: "img/борошно.jpg" },
+            { name: "Масло", brand: "Lespieds", price: 1.53, img: "img/масло.jpg" },
+            { name: "Макарони", brand: "Panzati", price: 1.30, img: "img/макарони.jpg" },
+            { name: "Цукрова пудра", brand: "Susu", price: 1.44, img: "img/susu.jpg" },
+            { name: "Вода", brand: "Aotte", price: 0.66, img: "img/вода проста.jpg" },
+            { name: "Сир", brand: "Comte", price: 1.24, img: "img/сир.jpg" },
+            { name: "Кава", brand: "Narvalo", price: 5.66, img: "img/кава.jpg" },
+            { name: "Чай", brand: "Lipton", price: 2.10, img: "img/tea.jpg" }, 
+            { name: "Молоко", brand: "Галичина", price: 2.10, img: "img/молоко.jpg" }, 
+            { name: "Яйця", brand: "Домашні", price: 2.10, img: "img/eggs.jpg" }   
+        ];
+
+        const grid = document.getElementById('productsGrid');
+
+        products.forEach(p => {
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    <div class="product-main">
+                        <div class="product-name">${p.name}</div>
+                        <div class="brand-name">${p.brand}</div>
+                        <div class="price-details">
+                            Місце: <b>Полиця</b><br>
+                            Ціна за шт: <b>$<span class="product-price">${p.price}</span></b>
+                        </div>
+                    </div>
+                    <div class="product-side">
+                        <span style="font-size: 10px; color: #aaa;">ДОДАТИ</span>
+                        <button class="btn-add" onclick="addToCart(this)">КУПИТИ</button>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+
+    <script src="cart.js"></script>
+</body>
+</html>

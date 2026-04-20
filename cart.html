@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Market OS | Кошик</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background: #0f172a; 
+            color: white; 
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+        }
+        .cart-container {
+            width: 90%; max-width: 500px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 30px; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        h1 { text-align: center; color: #a855f7; margin-bottom: 20px; }
+        .balance-box {
+            background: rgba(241, 196, 15, 0.1); padding: 15px;
+            border-radius: 12px; text-align: center; color: #f1c40f; font-weight: bold;
+            margin-bottom: 20px; border: 1px solid rgba(241, 196, 15, 0.2);
+        }
+        #cart-items { max-height: 250px; overflow-y: auto; margin-bottom: 20px; }
+        .item { 
+            display: flex; justify-content: space-between; 
+            padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .total { font-size: 24px; font-weight: bold; text-align: center; color: #2ecc71; margin: 20px 0; }
+        .buttons-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn {
+            padding: 12px; border-radius: 10px; border: none;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+            text-align: center; text-decoration: none; color: white; font-size: 14px;
+        }
+        .btn-pay { grid-column: span 2; background: #2ecc71; font-size: 18px; }
+        .btn-clear { background: #e74c3c; }
+        .btn-back { background: #3498db; }
+        .btn-orders { background: #9b59b6; }
+        .btn-topup { background: #f1c40f; color: black; grid-column: span 2; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="cart-container">
+    <div class="balance-box">
+        💰 Баланс: <span id="user-balance">$0.00</span>
+    </div>
+
+    <h1>🛒 Твій Кошик</h1>
+    
+    <div id="cart-items"></div>
+
+    <div class="total" id="total-price">Разом: $0.00</div>
+
+    <div class="buttons-group">
+        <button onclick="topUp()" class="btn btn-topup">💳 Поповнити гаманець (+$10000)</button>
+        <button onclick="checkout()" class="btn btn-pay">🚀 Оплатити зараз</button>
+        <a href="index.html" class="btn-back">Продовжити покупки</a>
+        <a href="orders.html" class="btn btn-orders">📦 Історія</a>
+        <button onclick="clearCart()" class="btn btn-clear">🗑 Очистити</button>
+    </div>
+</div>
+
+<script>
+    function updateUI() {
+        const cart = JSON.parse(localStorage.getItem('marketCart')) || [];
+        const container = document.getElementById('cart-items');
+        const totalElement = document.getElementById('total-price');
+        let total = 0;
+
+        container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#64748b;">Кошик порожній</p>' : '';
+        
+        cart.forEach(item => {
+            container.innerHTML += `<div class="item"><span>${item.name}</span><b>$${item.price.toFixed(2)}</b></div>`;
+            total += item.price;
+        });
+
+        totalElement.innerText = `Разом: $${total.toFixed(2)}`;
+        const balance = parseFloat(localStorage.getItem('userBalance')) || 0;
+        document.getElementById('user-balance').innerText = `$${balance.toFixed(2)}`;
+    }
+
+    function topUp() {
+        let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
+        localStorage.setItem('userBalance', (balance + 10000).toFixed(2));
+        updateUI();
+    }
+
+    function clearCart() {
+        localStorage.removeItem('marketCart');
+        updateUI();
+    }
+
+    function checkout() {
+        const cart = JSON.parse(localStorage.getItem('marketCart')) || [];
+        let total = cart.reduce((sum, item) => sum + item.price, 0);
+        let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
+
+        if (cart.length === 0) return alert("Додай щось у кошик!");
+        if (balance < total) return alert("Потрібно більше грошей!");
+
+        if(confirm("Підтвердити оплату?")) {
+            localStorage.setItem('userBalance', (balance - total).toFixed(2));
+            
+            // Зберігаємо в історію
+            const history = JSON.parse(localStorage.getItem('orderHistory')) || [];
+            history.push({ date: new Date().toLocaleString(), items: cart, total: total });
+            localStorage.setItem('orderHistory', JSON.stringify(history));
+
+            localStorage.removeItem('marketCart');
+            alert("✅ Оплачено успішно!");
+            updateUI();
+        }
+    }
+
+    updateUI();
+</script>
+</body>
+</html>

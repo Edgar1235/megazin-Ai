@@ -1,0 +1,154 @@
+/* --- ОСНОВНІ СТИЛІ --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    user-select: none;
+}
+
+:root {
+    --bg-color: rgba(224, 229, 236, 0.9);
+    --text-color: #333;
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --shadow-light: rgba(255, 255, 255, 0.3);
+    --main-blue: #00AEEF;
+    --main-orange: #FF8C00;
+    --main-green: #2ECC71;
+    --main-red: #E74C3C;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--text-color);
+}
+
+/* ЗАДНІЙ ФОН */
+.desktop-background {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* Переконайся, що файл у папці img має таку саму назву */
+    background: url('img/космонавт.jpg') no-repeat center center; 
+    background-size: cover;
+    z-index: -1;
+}
+
+.desktop-background::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.1); 
+}
+
+.desktop-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+/* ШАПКА */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 25px;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px var(--shadow-dark);
+}
+
+.os-logo { font-weight: 700; color: #222; }
+.os-time { font-weight: 600; color: #444; }
+
+/* КУЛЬНИЙ ВІДЖЕТ КОШИКА */
+.cart-widget {
+    background: rgba(46, 204, 113, 0.2);
+    border: 1px solid #2ECC71;
+    padding: 5px 15px;
+    border-radius: 20px;
+    color: #2ECC71;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+.cart-widget:hover {
+    background: #2ECC71;
+    color: white;
+    box-shadow: 0 0 10px #2ECC71;
+}
+
+/* СІТКА КНОПОК */
+.app-grid {
+    flex-grow: 1;
+    display: grid;
+    /* ВИПРАВЛЕНО: тепер рядок всередині блоку */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    padding: 20px;
+    justify-content: center;
+    align-content: center;
+}
+
+/* СТИЛЬ КНОПКИ */
+.app-btn {
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    backdrop-filter: blur(5px);
+    padding: 25px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: 0.3s ease;
+    box-shadow: 10px 10px 20px var(--shadow-dark), 
+                -5px -5px 15px var(--shadow-light);
+}
+
+.app-btn:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 15px 15px 30px var(--shadow-dark);
+}
+
+.app-icon {
+    width: 70px; height: 70px;
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: white; flex-shrink: 0;
+}
+
+.main-blue { background: var(--main-blue); }
+.main-orange { background: var(--main-orange); }
+.main-green { background: var(--main-green); }
+.main-red { background: var(--main-red); }
+
+.app-info { flex-grow: 1; }
+.app-name { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+.app-desc { font-size: 13px; color: #555; }
+
+.app-arrow { font-size: 18px; color: #aaa; transition: 0.3s; }
+.app-btn:hover .app-arrow { color: var(--main-blue); transform: translateX(5px); }
+
+/* НИЖНЯ ПАНЕЛЬ */
+.taskbar {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    text-align: center;
+    color: #222;
+    font-weight: 500;
+    margin-top: 30px;
+    box-shadow: 0 -4px 15px var(--shadow-dark);
+}

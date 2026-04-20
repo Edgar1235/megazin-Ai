@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARKET OS | Головна</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root { --ai-purple: #8e44ad; --ai-purple-hover: #9b59b6; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Montserrat', sans-serif; }
+        .desktop-container { display: flex; flex-direction: column; height: 100vh; padding: 30px; box-sizing: border-box; justify-content: space-between; position: relative; z-index: 2; }
+        
+        /* Сітка кнопок */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; width: 100%; max-width: 1400px; margin: 0 auto; align-content: center; }
+
+        /* AI Кнопка */
+        .ai-circle-btn { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--ai-purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); z-index: 1001; transition: 0.3s; border: none; }
+        .ai-circle-btn:hover { transform: scale(1.1); background: var(--ai-purple-hover); }
+
+        /* Вікно AI */
+        .ai-chat-window { position: fixed; bottom: 110px; right: 30px; width: 360px; height: 500px; background: white; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; z-index: 1000; transition: 0.3s; border: 1px solid #ddd; }
+        .ai-header { background: var(--ai-purple); color: white; padding: 18px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        #ai-messages { flex-grow: 1; padding: 20px; overflow-y: auto; color: #2c3e50; font-size: 14px; background: #fdfdfd; display: flex; flex-direction: column; gap: 10px; }
+        
+        .ai-input-area { display: flex; padding: 15px; border-top: 1px solid #eee; background: white; }
+        #ai-input { flex-grow: 1; border: 1px solid #eee; padding: 10px; border-radius: 8px; outline: none; }
+        #ai-send { background: var(--ai-purple); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 10px; font-weight: bold; }
+
+        .hidden { display: none !important; }
+        .bot-msg { background: #f0f0f0; padding: 10px; border-radius: 10px; align-self: flex-start; max-width: 80%; color: #333; }
+        .user-msg { background: var(--ai-purple); color: white; padding: 10px; border-radius: 10px; align-self: flex-end; max-width: 80%; }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-background"></div>
+
+    <div class="desktop-container">
+        <header class="top-bar">
+            <div class="os-logo"><i class="fas fa-terminal"></i> MARKET OS v2.5</div>
+            <a href="cart.html" class="cart-widget">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="main-cart-total">$0.00</span>
+            </a>
+            <div class="os-time" id="clock">00:00:00</div>
+        </header>
+
+        <main class="app-grid">
+            <a href="products.html" class="app-btn">
+                <div class="app-icon main-blue"><i class="fas fa-shopping-basket"></i></div>
+                <div class="app-info"><div class="app-name">Товари</div><div class="app-desc">Їжа та напої</div></div>
+            </a>
+            <a href="furniture.html" class="app-btn">
+                <div class="app-icon main-orange"><i class="fas fa-couch"></i></div>
+                <div class="app-info"><div class="app-name">Меблі</div><div class="app-desc">Інтер'єр</div></div>
+            </a>
+            <a href="decor.html" class="app-btn">
+                <div class="app-icon main-green"><i class="fas fa-home"></i></div>
+                <div class="app-info"><div class="app-name">Декор</div><div class="app-desc">Ремонт</div></div>
+            </a>
+            <a href="transport.html" class="app-btn">
+                <div class="app-icon main-red"><i class="fas fa-car-side"></i></div>
+                <div class="app-info"><div class="app-name">Транспорт</div><div class="app-desc">Техніка</div></div>
+            </a>
+        </main>
+
+        <footer class="taskbar">Система готовий. AI Менеджер онлайн.</footer>
+    </div>
+
+    <button id="ai-toggle" class="ai-circle-btn"><i class="fas fa-robot"></i></button>
+
+    <div id="ai-window" class="ai-chat-window hidden">
+        <div class="ai-header">
+            <span><i class="fas fa-magic"></i> AI Менеджер</span>
+            <i class="fas fa-times" id="close-ai" style="cursor: pointer;"></i>
+        </div>
+        <div id="ai-messages">
+            <div class="bot-msg">Привіт! Я твій AI-менеджер Market OS. Чим можу допомогти?</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="ai-input" placeholder="Запитайте...">
+            <button id="ai-send" onclick="sendMessage()">Дія</button>
+        </div>
+    </div>
+
+    <script src="ai.js"></script>
+
+    <script>
+        // Годинник
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('uk-UA'); }, 1000);
+
+        // Кошик
+        function refreshCart() {
+            const cart = JSON.parse(localStorage.getItem('marketCart')) || [];
+            const total = cart.reduce((s, i) => s + parseFloat(i.price || 0), 0);
+            document.getElementById('main-cart-total').innerText = `$${total.toFixed(2)}`;
+        }
+        refreshCart();
+
+        // Логіка відкриття вікна
+        const btn = document.getElementById('ai-toggle');
+        const win = document.getElementById('ai-window');
+        const close = document.getElementById('close-ai');
+
+        btn.onclick = () => win.classList.toggle('hidden');
+        close.onclick = (e) => { e.stopPropagation(); win.classList.add('hidden'); };
+    </script>
+</body>
+</html>
